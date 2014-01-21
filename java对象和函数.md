@@ -1,14 +1,17 @@
 #Javascript对象和函数
-=============
+
 Javascript 中有两个很重要的概念 对象和函数。
 
-1.	对象
-对象是javascript的根本。最基本的对象是Object对象。
-可以通过 new Object() 或者{} 创建。
+##一.对象
+> *  对象是javascript的根本。最基本的对象是Object对象。
+> *  可以通过 new Object() 或者{} 创建。
+
+### 1. 根对象
 通过 new Object 或者{}创建的对象是根对象 Object 的子对象，它的__proto__属性指向了根的Object 对象。
-1.1.	根Object 对象的特点
-1：根对象没有__proto__属性，因为他是最根部，没有父亲。
-2：他包含了javascript 最基本的几个函数，valueof tostring 等函数。
+根Object 对象的特点
+>1：根对象没有__proto__属性，因为他是最根部，没有父亲。
+>2：他包含了javascript 最基本的几个函数，valueof tostring 等函数。
+
  
 1.2.	Array 对象
 Array 对象常用的对象，他包含几个数组常用的方法，array对象有一个__proto__指向Object ，说明Array 是Object 的子对象。
