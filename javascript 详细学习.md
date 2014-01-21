@@ -1,4 +1,5 @@
 # 1:javascript函数和对象的区别？
+![image](https://github.com/mengzhiang/knowledge/blob/master/image/%E7%A8%8B%E5%BA%8F%E5%91%98%E8%83%BD%E5%8A%9B%E7%9F%A9%E9%98%B5.jpg)
 javascript 的任何
 2：javascript 原型继承和java类继承的区别？
 3：函数型语言和面向对象语言的区别？
