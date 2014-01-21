@@ -58,8 +58,8 @@ Javascript 中有两个很重要的概念 对象和函数。
 2. 构造函数通过prototype 属性来保存父对象的信息。
 3. 当创建新对象的时候，把创建的对象的__proto__ 属性 指向 构造函数的prototype。
 
-    var obj = new Object();
-    console.log(obj.__proto__ === Object.prototype);//true
+	    var obj = new Object();
+	    console.log(obj.__proto__ === Object.prototype);//true
  
 ####2.2.2	系统内置构造函数
 - Object
@@ -71,7 +71,7 @@ Javascript 中有两个很重要的概念 对象和函数。
 1. 开发人员自定义的函数全部都是构造函数。
 1. 开发人员可以自定义函数，通过Function构造函数。
 
-    var People = function(){};
-    var p1= new People();
+	    var People = function(){};
+	    var p1= new People();
 
 
