@@ -1,0 +1,41 @@
+<meta charset="UTF-8">
+<script>
+	function deepClone(copy) {
+		var obj = {};
+		for ( var prop in copy) {
+			if(copy[prop].constructor === Object){
+				obj[prop] = deepClone(copy[prop]);
+			}else{
+				obj[prop] = copy[prop];
+			}
+		}
+		return obj;
+	}
+	var copy = {
+		name : "张三",
+		say:function(){
+			return "张三说话了";
+		},
+		children:["小明","小红"],
+		position:{
+			x:10,
+			y:20
+		}
+	}
+	var result = deepClone(copy);
+	console.log(result.name);//张三
+	console.log(result.say());//张三说话了
+	console.log(result.position.x);//10
+	console.log(result.children.toString());//小明，小红
+	//对原值进行修改，看是否影响拷贝后的值
+	copy.name = "李四";
+	copy.say = function(){
+		return "李四说话了";
+	}
+	copy.position.x= 50;
+	console.log(result.name);//张三 
+	console.log(result.say());//张三说话了
+	console.log(result.position.x);//10 
+	console.log(result.children.toString());//小明，小红
+	//对原值的修改不会影响复制后的值
+</script>

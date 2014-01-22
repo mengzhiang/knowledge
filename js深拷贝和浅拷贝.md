@@ -1,0 +1,84 @@
+# javascript 深拷贝和浅拷贝
+javascript 基于对象，对象的创建时可以采用拷贝的方式来做。但是拷贝分深拷贝和浅拷贝两种。
+## 浅拷贝
+
+浅拷贝 只拷贝基本类型，不拷贝引用类型
+
+	//浅拷贝
+	function simpleClone(copy) {
+		var obj = {};
+		for ( var prop in copy) {
+			obj[prop] = copy[prop];
+		}
+		return obj;
+	}
+	var copy = {
+		name : "张三",
+		say:function(){
+			return "张三说话了";
+		},
+		children:["小明","小红"],
+		position:{
+			x:10,
+			y:20
+		}
+	}
+	var result = simpleClone(copy);
+	console.log(result.name);//张三
+	console.log(result.say());//张三说话了
+	console.log(result.position.x);//10
+	console.log(result.children.toString());//小明，小红
+	//对原值进行修改，看是否影响拷贝后的值
+	copy.name = "李四";
+	copy.say = function(){
+		return "李四说话了";
+	}
+	copy.position.x= 50;
+	copy.children[0] = "小黑";
+	console.log(result.name);//张三 浅拷贝 只拷贝属性，方法，不拷贝引用。
+	console.log(result.say());//张三说话了
+	console.log(result.position.x);//50 说明对原值的更改会影响拷贝后的元素
+	console.log(result.children.toString());//小黑，小红 说明对原值的更改会影响拷贝后的元素
+
+##深拷贝
+
+深拷贝基本类型和引用类型都拷贝
+
+	function deepClone(copy) {
+		var obj = {};
+		for ( var prop in copy) {
+			if(copy[prop].constructor === Object){
+				obj[prop] = deepClone(copy[prop]);
+			}else{
+				obj[prop] = copy[prop];
+			}
+		}
+		return obj;
+	}
+	var copy = {
+		name : "张三",
+		say:function(){
+			return "张三说话了";
+		},
+		children:["小明","小红"],
+		position:{
+			x:10,
+			y:20
+		}
+	}
+	var result = deepClone(copy);
+	console.log(result.name);//张三
+	console.log(result.say());//张三说话了
+	console.log(result.position.x);//10
+	console.log(result.children.toString());//小明，小红
+	//对原值进行修改，看是否影响拷贝后的值
+	copy.name = "李四";
+	copy.say = function(){
+		return "李四说话了";
+	}
+	copy.position.x= 50;
+	console.log(result.name);//张三 
+	console.log(result.say());//张三说话了
+	console.log(result.position.x);//10 
+	console.log(result.children.toString());//小明，小红
+	//对原值的修改不会影响复制后的值
