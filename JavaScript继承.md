@@ -1,9 +1,22 @@
 # JavaScript 继承
 
+javascript 发展历史
+
+1. 借鉴了c的语法 new
+1. 借鉴了java的数据类型和内存回收 Number Date String 
+1. 借鉴了schema的函数作为一等公民 function
+1. 借鉴了Self语言的原型继承。prototype
+    
+new使他看起来像是面向对象，但是这是假象，new的内部还是基于原型实现的。
+
+>什么是继承？
+>为什么要继承？
+>面向对象和基于对象的语言的区别？
+>
+
 
 
 ###一：理解 new 运算符
-
 
 	function A1(){
 		this.name ="A1";	
@@ -62,6 +75,7 @@
 	alert(a2 instanceof A2); //false
 	//因为A2有返回值，所以直接返回一个空对象，这个空对象的__proto__指向了根对象，没有指向
 	//A2的prototype属性，所以aa1 和aa2 都不是A2的实例
+
 	
 ###二：理解prototype 属性
 
@@ -90,3 +104,14 @@
 	//2.构造函数都包含原型类型，保证生成的对象都能够找到自己的类型。
 	//3.new的过程中，设置__proto__指向构造函数的原型引用。
 	//4：所以对原型的更改会影响到所有对象。
+
+###三：理解Object.create
+
+
+	//根据传入的原型对象创建新对象
+
+	Object.create= function(o){
+		function F(){};
+		F.prototype = o;
+		return new F();
+	}
