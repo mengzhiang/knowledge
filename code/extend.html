@@ -1,0 +1,265 @@
+<html>
+    <head>
+        <title>各种 JS 库的类继承实现</title>
+        <!–
+        参考：
+        jquery、prototype、mootools、YUI的继承的实现
+        http://www.uedmagazine.com/ued/index.php?entry=entry091109-052418
+
+        http://mankz.com/code/GlobalCheck.htm
+
+        jQuery.extend() 不算类继承。
+
+        实现复杂度： mootools > prototype > Dojo > YUI 3 > Echo 3 > YUI 2
+
+        实现特性丰富度： Echo 3 > mootools > Dojo > prototype > YUI 3 > YUI 2
+        (mootools 源码太复杂，看不懂，prototype, dojo 也比较复杂，因此特性丰富程度不是很清楚)
+
+        实现干扰程度： Mootools > Prototype > Dojo > Echo 3 > YUI 2 > YUI 3
+
+                            基类属性个数        子类属性个数    基类原型属性个数    子类原型属性个数
+                Mootools    14                  15              2                   5
+                            $family implement prototype constructor extend create run pass bind bindWithEvent attempt delay periodical protect
+                            $family implement prototype constructor extend create run pass bind bindWithEvent attempt delay periodical protect parent
+                            initialize b
+                            parent a constructor initialize b
+
+                YUI 2       1                   2               1                   3
+                            prototype
+                            prototype superclass
+                            b
+                            constructor a b
+
+                YUI 3       1                   2               0                   2
+                            prototype
+                            prototype superclass
+                            无
+                            construtor a
+
+                Dojo        4                   4               6                   7
+                            _meta superclass extend prototype
+                            _meta superclass extend prototype
+                            constructor getInherited inherited isInstanceOf declaredClass b 
+                            a constructor getInherited inherited isInstanceOf declaredClass b
+
+                Echo 3      3                   3  (还有 $abstract，代码没演示) 1   3
+                            $virtual $super prototype
+                            $virtual $super prototype
+                            b
+                            constructor a b
+
+                Prototype   12                  12              2                   4
+                            addMethods superclass subclasses prototype argumentNames bind bindAsEventListener curry delay defer wrap methodize
+                            addMethods superclass subclasses prototype argumentNames bind bindAsEventListener curry delay defer wrap methodize
+                            initialize b
+                            a constructor initialize b
+
+                // By withinsea@newsmth (Mo Chen <withinsea@gmail.com>)
+                jQuery OO   1                   1               1                   2
+                            prototype
+                            prototype
+                            b
+                            a b
+
+        –>
+        <script type="text/javascript">
+            result = "Should be:\thello, hello, undefined, VERSION, true\n\n";
+        </script>
+
+        <script type="text/javascript" src="jquery-1.4.2.js"></script>
+        <script type="text/javascript">
+            jQuery.noConflict();
+
+            BaseClass = {};         // reset it
+            DerivedClass = {};      // reset it
+
+            BaseClass = function() {
+            }
+
+            DerivedClass = function() {
+                BaseClass.call(this);
+            }
+
+            jQuery.extend(DerivedClass.prototype, BaseClass.prototype, {a : "1.4.2"});
+            var b = new BaseClass();
+            var d = new DerivedClass();
+
+            BaseClass.prototype.b = "hello";
+            result += "jQuery: \t" + b.b + ", " + d.b + ", " + b.a + ", " + d.a + ", " + (d instanceof BaseClass);
+            // output: hello, undefined, undefined, 1.4.2, false
+        </script>
+
+        <script type="text/javascript" src="mootools-1.2.4-core-nc.js"></script>
+        <script type="text/javascript">
+            BaseClass = {};         // reset it
+            DerivedClass = {};      // reset it
+
+            BaseClass = new Class({
+                initialize: function() {},
+            });
+
+            DerivedClass = new Class({
+                Extends: BaseClass,
+                a : "1.2.4",
+            });
+            var b = new BaseClass();
+            var d = new DerivedClass();
+
+            //BaseClass.prototype.b = "hello";
+            // Or
+            BaseClass.implement({ b : "hello"});
+
+            result += "\nMootools: \t" + b.b + ", " + d.b + ", " + b.a + ", " + d.a + ", " + (d instanceof BaseClass);
+            // output: hello, hello, undefined, 1.2.4, true
+        </script>
+
+        <script type="text/javascript" src="yahoo-dom-event.js"></script>
+        <script type="text/javascript">
+            // YUI 2.8.0r4
+            BaseClass = {};         // reset it
+            DerivedClass = {};      // reset it
+
+            BaseClass = function() {
+            }
+            DerivedClass = function() {
+                this.constructor.superclass.constructor.call(this);
+            }
+            // 实现跟 Echo 3 Core.js，prototype.js 类似，不继承静态属性,
+            // 不支持新增静态属性
+            YAHOO.extend(DerivedClass, BaseClass, {a : "2.8.0r4"});
+            var b = new BaseClass();
+            var d = new DerivedClass();
+
+            BaseClass.prototype.b = "hello";
+            result += "\nYUI 2.8.0r4: \t" + b.b + ", " + d.b + ", " + b.a + ", " + d.a + ", " + (d instanceof BaseClass);
+            // output: hello, hello, undefined, 2.8.0r4, true
+        </script>
+
+        <script type="text/javascript" src="yui-min.js"></script>
+        <script type="text/javascript">
+            // YUI 3.1.0
+            BaseClass = {};         // reset it
+            DerivedClass = {};      // reset it
+
+            YUI().use("oop", function(Y) {
+                BaseClass = function() {
+                };
+                DerivedClass = function() {
+                    this.constructor.superclass.constructor.call(this);
+                }
+                // 跟 YUI 2 原理一样，实现稍微复杂点，支持新增静态属性
+                Y.extend(DerivedClass, BaseClass, {a : "3.1.0"});
+                var b = new BaseClass();
+                var d = new DerivedClass();
+
+                BaseClass.prototype.b = "hello";
+                result += "\nYUI 3.1.0: \t" + b.b + ", " + d.b + ", " + b.a + ", " + d.a + ", " + (d instanceof BaseClass);
+                // output: hello, hello, undefined, 3.1.0, true
+            });
+        </script>
+
+        <script type="text/javascript" src="dojo.js.uncompressed.js"></script>
+        <script>
+            // Dojo 1.4.2，也是用了 shared prototype 技巧
+            BaseClass = {};         // reset it
+            DerivedClass = {};      // reset it
+
+            dojo.declare("BaseClass", null, {
+                constructor: function() {
+                },
+            });
+            dojo.declare("DerivedClass", BaseClass, {
+                constructor: function() {
+                },
+                a : "1.4.2",
+            });
+
+            var b = new BaseClass();
+            var d = new DerivedClass();
+
+            BaseClass.prototype.b = "hello";
+            result += "\nDojo: \t\t" + b.b + ", " + d.b + ", " + b.a + ", " + d.a + ", " + (d instanceof BaseClass);
+            // output: hello, hello, undefined, 1.4.2, true
+        </script>
+
+        <script type="text/javascript" src="Core.js"></script>
+        <script type="text/javascript">
+            // Echo 3 Core.js 3.0 beta8
+            BaseClass = {};         // reset it
+            DerivedClass = {};      // reset it
+
+            BaseClass = Core.extend({});
+            DerivedClass = Core.extend(BaseClass, {a : "3.0 beta8"});
+            var b = new BaseClass();
+            var d = new DerivedClass();
+
+            BaseClass.prototype.b = "hello";
+            result += "\nEcho 3 Core.js: " + b.b + ", " + d.b + ", " + b.a + ", " + d.a + ", " + (d instanceof BaseClass);
+            // output: hello, hello, undefined, 3.0 beta8, ture
+        </script>
+
+        <script type="text/javascript" src="prototype-1.7-rc1.js"></script>
+        <script type="text/javascript">
+            BaseClass = {};         // reset it
+            DerivedClass = {};      // reset it
+
+            BaseClass = Class.create({
+                initialize: function() {},
+            });
+
+            // 实现跟 echo 3 Core.js 的 Core.extend() 一样，利用了shared prototype
+            // 技巧，新增的属性复制到子类的 prototype 里。
+            DerivedClass = Class.create(BaseClass, {a : "1.7-rc1"});
+            var b = new BaseClass();
+            var d = new DerivedClass();
+
+            BaseClass.prototype.b = "hello";
+            result += "\nPrototype: \t" + b.b + ", " + d.b + ", " + b.a + ", " + d.a + ", " + (d instanceof BaseClass);
+            // output: hello, hello, undefined, 1.7-rc1, ture
+        </script>
+
+        <script type="text/javascript" src="jquery.oo.js"></script>
+        <script type="text/javascript">
+            var JO = window.jQuery || window.oo;
+
+            BaseClass = JO.claz(function() {}, {});
+            // 也是使用 shared prototype 技巧，新增属性放入子类的prototype
+            DerivedClass = JO.extendClaz(BaseClass,
+                    function() {
+                        BaseClass.call(this);
+                    },
+                    {a : "2010-04-22"});
+
+            var b = new BaseClass();
+            var d = new DerivedClass();
+            // Or JO.neo(DerivedClass), JO.neo(DerivedClass.prototype)
+
+            BaseClass.prototype.b = "hello";
+            result += "\njQuery OO: \t" + b.b + ", " + d.b + ", " + b.a + ", " + d.a + ", " + (d instanceof BaseClass);
+            // output: hello, hello, undefined, 2010-04-22, true
+        </script>
+
+    </head>
+    <body>
+        <script type="text/javascript">
+            // 为了不受其它库影响，统计某个库的干扰时，必须把其它库的代码片断注释掉
+            function countProperties(klazz, name) {
+                var i = 0;
+
+                result += "\n\n";
+                for (var p in klazz) {
+                    ++i;
+                    result += p.toString() + " ";
+                }
+                result += "\n—- " + name + " " + i;
+            }
+
+            countProperties(BaseClass, "BaseClass");
+            countProperties(DerivedClass, "DerivedClass");
+            countProperties(BaseClass.prototype, "BaseClass.prototype");
+            countProperties(DerivedClass.prototype, "DerivedClass.prototype");
+
+            document.write("<pre>" + result + "</pre>");
+        </script>
+    </body>
+</html>

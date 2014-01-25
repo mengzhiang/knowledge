@@ -1,0 +1,16 @@
+<meta charset="UTF-8">
+<script>
+var print = function(i){ console.log(i);};
+[1,2,3].forEach(print);
+
+function reverse(string) {
+　　　　if(string.length == 0) {
+　　　　　　return string;
+　　　　} else {
+　　　　　　return reverse(string.substring(1, string.length)) + string.substring(0, 1);
+　　　　}
+　　}
+var s = "123456";
+console.log(s);
+console.log(reverse(s));
+</script>

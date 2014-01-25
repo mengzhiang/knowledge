@@ -1,0 +1,12 @@
+<meta charset="UTF-8">
+<script>
+	var Human = {
+		type : "human"
+	};
+	var Man = {};
+	Man.__proto__ = Human;
+	var Woman = Object.create(Human);
+	console.log(Woman.type);//human
+	
+	
+</script>

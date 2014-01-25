@@ -17,9 +17,9 @@ Javascript 中有两个很重要的概念 对象和函数。
 
 
 ###1.1 根对象
-通过 new Object 或者{}创建的对象是根对象 Object 的子对象，它的__proto__属性指向了根的Object 对象。
+通过 new Object 或者{}创建的对象是根对象 Object 的子对象，它的`__proto__`属性指向了根的Object 对象。
 
-1. 根对象没有__proto__属性，因为他是最根部，没有父亲。
+1. 根对象没有`__proto__`属性，因为他是最根部，没有父亲。
 1. 他包含了javascript 最基本的几个函数，valueof tostring 等函数。
 
 ![javascript 根对象](/image/object_function/object.png)
@@ -33,7 +33,7 @@ Javascript 中有两个很重要的概念 对象和函数。
 ###1.3.	函数对象
 1. 函数也是一种对象，创建函数 可以直接function fun1(){}也可以 new Function();
 1. 函数对象根对象是 function Empty 
-1. 根函数的__proto__ 指向了根对象Object。
+1. 根函数的`__proto__` 指向了根对象Object。
 1. 根函数 没有 prototype 属性，这个属性的用户在函数中会讲。
  
 ![javascript 根对象](/image/object_function/function.png)
@@ -41,7 +41,7 @@ Javascript 中有两个很重要的概念 对象和函数。
 ###1.4.总结
 
 1. javascript 不是面向对象的语言，而是基于对象的语言。
-1. **对象之间通过__proto__属性来记录对象的继承关系**。
+1. **对象之间通过`__proto__`属性来记录对象的继承关系**。
 1. 关于是否需要维护这样的关系，有很多争论，这里不表。
 
 
@@ -63,9 +63,9 @@ Javascript 中有两个很重要的概念 对象和函数。
 ###2.2构造函数
 
 ####2.2.1	构造函数都包含prototype属性
-1. 因为构造函数是用于创建新对象，创建的新对象上的__proto__ 属性需要保存父对象的引用，
-2. 构造函数通过prototype 属性来保存父对象的信息。
-3. 当创建新对象的时候，把创建的对象的__proto__ 属性 指向 构造函数的prototype。
+1. 因为构造函数是用于创建新对象，创建的新对象上的`__proto__` 属性需要保存父对象的引用，
+2. 构造函数通过`prototype` 属性来保存父对象的信息。
+3. 当创建新对象的时候，把创建的对象的`__proto__` 属性 指向 构造函数的prototype。
 
 	    var obj = new Object();
 	    console.log(obj.__proto__ === Object.prototype);//true
@@ -78,7 +78,7 @@ Javascript 中有两个很重要的概念 对象和函数。
 
 ####2.2.3	自定义函数
 1. 开发人员自定义的函数全部都是构造函数。
-1. 开发人员可以自定义函数，通过Function构造函数。
+1. 开发人员可以自定义函数，通过`Function`构造函数。
 
 	    var People = function(){};
 	    var p1= new People();
